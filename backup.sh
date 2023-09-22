@@ -21,5 +21,6 @@ for i in $(ls ~/scripts)
 done
 
 echo "Backing up profile..."
+echo ".bashrc"
 cp ~/.bashrc $backup
 echo "Done."
