@@ -4,9 +4,10 @@ source ~/scripts/system/config/env
 
 echo "Removing old backup..."
 if [ -d $backup/scripts ] 
-  then rm -r $backup/scripts 
-  else  mkdir $backup/scripts
+  then 
+    rm -r $backup/scripts
 fi
+mkdir $backup/scripts
 
 echo "Backing up scripts..."
 for i in $(ls ~/scripts)
