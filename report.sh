@@ -13,7 +13,7 @@ cpu_type=$(lscpu | grep "Model name" | awk -F "Intel\(R\) Core\(TM\) |AMD " '{pr
 mem_size=$(free -h | grep Mem | awk '{print $2}')
 swap_size=$(free -h | grep Swap | awk '{print $2}')
 cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
-info="$cpuType, $memSize RAM, $swapSize swap, $cores cores"
+info="$cpu_type, $mem_size RAM, $swap_size swap, $cores cores"
 bucket=machine
 
 # show json output 
@@ -41,6 +41,6 @@ then
   --header "Content-Type: text/plain; charset=utf-8" \
   --header "Accept: application/json" \
   --data-binary "
-    status,machine=$MACHINE disk1=\"$disk1\",disk2=\"$disk2\",memory=\"$memory\",swap=\"$swap\",cpu=\"$cpu\",ip=\"$ip\",message=\"$message\",info=\"$info\" $(date +%s%N) 
+    status,machine=$MACHINE disk1=\"$disk1_use\",disk2=\"$disk2_use\",memory=\"$mem_use\",swap=\"$swap_use\",cpu=\"$cpu_use\",ip=\"$ip\",message=\"$message\",info=\"$info\" $(date +%s%N) 
     "
 fi
