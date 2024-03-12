@@ -1,24 +1,51 @@
 #!/bin/bash
 
-source ~/scripts/system/config/env
+source ~/.bash_profile
 
-d1=$(df | grep -E $disk1 | awk '{print $5}' | sed 's/%//')
-d2=$(df | grep -E $disk2 | awk '{print $5}' | sed 's/%//')
-memUsed=$(free | grep Mem | awk '{print $3 / $2 * 100}' | cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
-swapUsed=$(free | grep Swap | awk '{print $3 / $2 * 100}'| cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
-cpuUsed=$(top -bn2 | grep '%Cpu' | tail -1 | grep -P '(....|...) id,'|awk '{print 100-$8}')
+disk1_use=$(df | grep -E $DISK1 | awk '{print $5}' | sed 's/%//')
+disk2_use=$(df | grep -E $DISK2 | awk '{print $5}' | sed 's/%//')
+mem_use=$(free | grep Mem | awk '{print $3 / $2 * 100}' | cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
+swap_use=$(free | grep Swap | awk '{print $3 / $2 * 100}'| cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
+cpu_use=$(top -bn2 | grep '%Cpu' | tail -1 | grep -P '(....|...) id,'|awk '{print 100-$8}')
 ip=$(hostname -I | cut -d' ' -f1)
 
-cpuType=$(lscpu | grep "Model name" | awk -F "Intel\(R\) Core\(TM\) |AMD " '{print $2}')
-memSize=$(free -h | grep Mem | awk '{print $2}')
-swapSize=$(free -h | grep Swap | awk '{print $2}')
+cpu_type=$(lscpu | grep "Model name" | awk -F "Intel\(R\) Core\(TM\) |AMD " '{print $2}')
+mem_size=$(free -h | grep Mem | awk '{print $2}')
+swap_size=$(free -h | grep Swap | awk '{print $2}')
 cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
+info=$cpuType, $memSize RAM, $swapSize swap, $cores cores
+bucket=machine
 
-echo "updated='$(date +'%y-%m-%d %H:%M')'"
-echo "disk1="$d1
-echo "disk2="$d2
-echo "memory="$memUsed
-echo "swap="$swapUsed | sed 's/nan//g'
-echo "cpu="$cpuUsed
-echo "system='$cpuType, $memSize RAM, $swapSize swap, $cores cores'"
+echo "memory="$mem_use
+echo "swap="$swap_use | sed 's/nan//g'
+echo "cpu="$cpu_use
 echo "ip="$ip
+
+# show json output 
+cat << EOF
+{
+  "machine":"$MACHINE",
+  "disk1":"$disk1_use",
+  "disk2":"$disk2_use",
+  "memory":"$mem_use",
+  "swap":"$swap_use",
+  "cpu":"$cpu_use",
+  "ip":"$ip",
+  "message":"$message",
+  "info":"$info",
+  "updated":"$(date --utc +%FT%TZ)",
+}
+EOF
+
+# send data to influxdb
+if [ ! -z $INFLUX_HOST ]
+then
+ curl --request POST \
+ "$INFLUX_HOST/api/v2/write?org=$INFLUX_ORG&bucket=$bucket&precision=ns" \
+  --header "Authorization: Token $INFLUX_TOKEN" \
+  --header "Content-Type: text/plain; charset=utf-8" \
+  --header "Accept: application/json" \
+  --data-binary "
+    status,machine=$MACHINE disk1=\"$disk1\",disk2=\"$disk2\",memory=\"$memory\",swap=\"$swap\",cpu=\"$cpu\",ip=\"$ip\",message=\"$message\",info=\"$info\" $(date +%s%N) 
+    "
+fi
