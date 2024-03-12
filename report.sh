@@ -13,13 +13,8 @@ cpu_type=$(lscpu | grep "Model name" | awk -F "Intel\(R\) Core\(TM\) |AMD " '{pr
 mem_size=$(free -h | grep Mem | awk '{print $2}')
 swap_size=$(free -h | grep Swap | awk '{print $2}')
 cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
-info=$cpuType, $memSize RAM, $swapSize swap, $cores cores
+info="$cpuType, $memSize RAM, $swapSize swap, $cores cores"
 bucket=machine
-
-echo "memory="$mem_use
-echo "swap="$swap_use | sed 's/nan//g'
-echo "cpu="$cpu_use
-echo "ip="$ip
 
 # show json output 
 cat << EOF
