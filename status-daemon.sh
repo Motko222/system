@@ -1,8 +1,8 @@
 #!/bin/bash
-source ~/.bash_profile
 
 while true
 do
+ source ~/.bash_profile
  for i in $STATUS
  do
    bash ~/scripts/$i/report.sh
