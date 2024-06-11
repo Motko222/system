@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ~/scripts/system/cfg
+source ~/.bash_profile
 
 read -p "file? ("$SWAPFILE")" file
 if [ -z $file ]; then file=$SWAPFILE; fi
