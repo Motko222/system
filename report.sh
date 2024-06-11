@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ~/.bash_profile
+source ~/scripts/system/cfg
 
 disk1_use=$(df | grep -E $DISK1 | awk '{print $5}' | sed 's/%//')
 disk2_use=$(df | grep -E $DISK2 | awk '{print $5}' | sed 's/%//')
