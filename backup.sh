@@ -1,26 +1,28 @@
 #!/bin/bash
 
-source ~/scripts/system/config/env
+source ~/scripts/system/cfg
 
 echo "Removing old backup..."
-if [ -d $backup/scripts ] 
+if [ -d $BACKUP/scripts ] 
   then 
-    rm -r $backup/scripts
+    rm -r $BACKUP/scripts
 fi
-mkdir $backup/scripts
+mkdir $BACKUP/scripts
 
 echo "Backing up scripts..."
 for i in $(ls ~/scripts)
  do
   echo ~/scripts/$i
-  mkdir $backup/scripts/$i
-  cp ~/scripts/$i/*.sh $backup/scripts/$i
+  mkdir $BACKUP/scripts/$i
+  cp ~/scripts/$i/*.sh $BACKUP/scripts/$i
   if [ -d ~/scripts/$i/config ]
-    then cp -r ~/scripts/$i/config $backup/scripts/$i
+    then cp -r ~/scripts/$i/config $BACKUP/scripts/$i
   fi
 done
 
 echo "Backing up profile..."
 echo ".bashrc"
-cp ~/.bashrc $backup
+cp ~/.bashrc $BACKUP
+echo ".bash_profile"
+cp ~/.bash_profile $BACKUP
 echo "Done."
