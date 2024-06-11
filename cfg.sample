@@ -2,3 +2,4 @@ SWAPFILE=~/swap1
 SWAPSIZE=16G
 DISK1=sda3
 DISK2=
+BACKUP=/path/to/folder
