@@ -1,61 +1,34 @@
-#!/bin/bash
+!/bin/bash
 
 source ~/.bash_profile
 
-version=$(cat ~/aethir/log/server.log | grep "Initialize Service Version: " | head -1 | awk -F "Initialize Service Version: " '{print $NF}' | awk '{print $1}')
-service=$(sudo systemctl status aethir-checker --no-pager | grep "active (running)" | wc -l)
-pid=$(pidof AethirCheckerService)
-chain=$AETHIR_CHAIN
-network=$AETHIR_NETWORK
-type=$AETHIR_TYPE
-owner=$AETHIR_OWNER
-id=$AETHIR_ID
-chain=$AETHIR_CHAIN
-group=$AETHIR_GROUP
-json=$(cat ~/aethir/log/server.log | grep "capacityLimit" | tail -1 | awk -F "Success to send: " '{print $NF}')
-delegated=$(echo $json | jq -r .data.delegatedLicense)
-pending=$(echo $json | jq -r . .data.pendingLicenses)
-checking=$(echo $json | jq -r .data.checking)
-banned=$(echo $json | jq -r .data.banned)
-ready=$(echo $json | jq -r .data.ready)
+disk1_use=$(df | grep -E $DISK1 | awk '{print $5}' | sed 's/%//')
+disk2_use=$(df | grep -E $DISK2 | awk '{print $5}' | sed 's/%//')
+mem_use=$(free | grep Mem | awk '{print $3 / $2 * 100}' | cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
+swap_use=$(free | grep Swap | awk '{print $3 / $2 * 100}'| cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
+cpu_use=$(top -bn2 | grep '%Cpu' | tail -1 | grep -P '(....|...) id,'| awk '{print 100-$8}' | sed 's/,/./g')
+ip=$(hostname -I | cut -d' ' -f1)
 
+cpu_type=$(lscpu | grep "Model name" | awk -F "Intel\(R\) Core\(TM\) |AMD " '{print $2}')
+mem_size=$(free -h | grep Mem | awk '{print $2}')
+swap_size=$(free -h | grep Swap | awk '{print $2}')
+cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
+info="$cpu_type, $mem_size RAM, $swap_size swap, $cores cores"
+group=machine
 
-if [ $service -ne 1 ]
-then
-  status="error";
-  message="service not running"
-else
-  status="ok";
-  message="checking $checking pending $pending";
-fi
-
-#if [ -z $pid ]
-#then
-#  status="error";
-#  message="process not running"
-#else
-#  status="ok";
-#fi
-
+# show json output 
 cat << EOF
 {
-  "id":"$id",
   "machine":"$MACHINE",
-  "chain":"$chain",
-  "network":"$network",
-  "owner":"$owner",
-  "type":"$type",
-  "version":"$version",
-  "status":"$status",
+  "disk1":"$disk1_use",
+  "disk2":"$disk2_use",
+  "memory":"$mem_use",
+  "swap":"$swap_use",
+  "cpu":"$cpu_use",
+  "ip":"$ip",
   "message":"$message",
-  "service":$service,
-  "pid":$pid,
-  "delegated":"$delegated",
-  "pending":"$pending",
-  "checking":"$checking",
-  "banned":"$banned",
-  "ready":"$ready",
-  "updated":"$(date --utc +%FT%TZ)"
+  "info":"$info",
+  "updated":"$(date --utc +%FT%TZ)",
 }
 EOF
 
@@ -68,6 +41,6 @@ then
   --header "Content-Type: text/plain; charset=utf-8" \
   --header "Accept: application/json" \
   --data-binary "
-    report,id=$id,machine=$MACHINE,owner=$owner,grp=$group status=\"$status\",message=\"$message\",version=\"$version\",url=\"$url\",chain=\"$chain\",network=\"$network\",type=\"$type\" $(date +%s%N)
+    report,id=$MACHINE,grp=$group disk1=\"$disk1_use\",disk2=\"$disk2_use\",memory=\"$mem_use\",swap=\"$swap_use\",cpu=\"$cpu_use\",ip=\"$ip\",message=\"$message\",info=\"$inf>
     "
 fi
