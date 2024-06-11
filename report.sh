@@ -14,7 +14,8 @@ mem_size=$(free -h | grep Mem | awk '{print $2}')
 swap_size=$(free -h | grep Swap | awk '{print $2}')
 cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
 info="$cpu_type, $mem_size RAM, $swap_size swap, $cores cores"
-bucket=machine
+bucket=main
+type=machine
 
 # show json output 
 cat << EOF
@@ -41,6 +42,6 @@ then
   --header "Content-Type: text/plain; charset=utf-8" \
   --header "Accept: application/json" \
   --data-binary "
-    status,machine=$MACHINE disk1=\"$disk1_use\",disk2=\"$disk2_use\",memory=\"$mem_use\",swap=\"$swap_use\",cpu=\"$cpu_use\",ip=\"$ip\",message=\"$message\",info=\"$info\" $(date +%s%N) 
+    status,machine=$MACHINE,type=$type disk1=\"$disk1_use\",disk2=\"$disk2_use\",memory=\"$mem_use\",swap=\"$swap_use\",cpu=\"$cpu_use\",ip=\"$ip\",message=\"$message\",info=\"$info\" $(date +%s%N) 
     "
 fi
