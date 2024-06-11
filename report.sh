@@ -26,6 +26,7 @@ then
   message="service not running"
 else
   status="ok";
+  message="checking $checking pending $pending";
 fi
 
 #if [ -z $pid ]
