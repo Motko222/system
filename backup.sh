@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ~/scripts/system/cfg
+source ~/.bash_profile
 
 echo "Removing old backup..."
 if [ -d $BACKUP/scripts ] 
