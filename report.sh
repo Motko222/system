@@ -7,7 +7,9 @@ disk2_use=$(df | grep -E $DISK2 | awk '{print $5}' | sed 's/%//')
 mem_use=$(free | grep Mem | awk '{print $3 / $2 * 100}' | cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
 swap_use=$(free | grep Swap | awk '{print $3 / $2 * 100}'| cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
 cpu_use=$(top -bn2 | grep '%Cpu' | tail -1 | grep -P '(....|...) id,'| awk '{print 100-$8}' | sed 's/,/./g')
-ip=$(hostname -I | cut -d' ' -f1)
+int_ip=$(hostname -I | cut -d' ' -f1)
+[ -z EXT_IP ] && ext_ip=$(curl checkip.amazonaws.com) || ext_ip=$EXT_IP
+owner=$OWNER
 
 cpu_type=$(lscpu | grep "Model name" | awk -F "Intel\(R\) Core\(TM\) |AMD " '{print $2}')
 mem_size=$(free -h | grep Mem | awk '{print $2}')
@@ -41,6 +43,6 @@ then
   --header "Content-Type: text/plain; charset=utf-8" \
   --header "Accept: application/json" \
   --data-binary "
-    report,id=$MACHINE,grp=$group disk1=\"$disk1_use\",disk2=\"$disk2_use\",memory=\"$mem_use\",swap=\"$swap_use\",cpu=\"$cpu_use\",ip=\"$ip\",message=\"$message\",info=\"$info\" $(date +%s%N)
+    report,id=$MACHINE,grp=$group,owner=$owner disk1=\"$disk1_use\",disk2=\"$disk2_use\",memory=\"$mem_use\",swap=\"$swap_use\",cpu=\"$cpu_use\",int_ip=\"$int_ip\",ext_ip=\"$ext_ip\",message=\"$message\",info=\"$info\" $(date +%s%N)
     "
 fi
