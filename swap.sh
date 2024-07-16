@@ -1,12 +1,14 @@
 #!/bin/bash
 
 source ~/.bash_profile
+default_file=~/swap1
+default_size=8GB
 
-read -p "file? ("$SWAPFILE")" file
-if [ -z $file ]; then file=$SWAPFILE; fi
-read -p "size? ("$SWAPSIZE")" size
-if [ -z $size ]; then size=$SWAPSIZE; fi
-sudo fallocate -l $size $file;
-sudo chmod 600 $file;
-sudo mkswap $file;
-sudo swapon $file;
+read -p "file? ("$default_file")" file
+[ -z $file ] && file=$default_file
+read -p "size? ("$default_size")" size
+[ -z $size ] && size=$default_size
+sudo fallocate -l $size $file
+sudo chmod 600 $file
+sudo mkswap $file
+sudo swapon $file
