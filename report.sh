@@ -11,7 +11,7 @@ int_ip=$(hostname -I | cut -d' ' -f1)
 [ -z $EXT_IP ] && ext_ip=$(curl checkip.amazonaws.com) || ext_ip=$EXT_IP
 owner=$OWNER
 
-cpu_type=$(lscpu | grep "Model name" | awk -F "Intel\(R\) Core\(TM\) |AMD " '{print $2}')
+cpu_type=$(lscpu | grep -a "Model name" | awk -F "Model name:" '{print $2}' | sed 's/^[[:space:]]*//')
 mem_size=$(free -h | grep Mem | awk '{print $2}')
 swap_size=$(free -h | grep Swap | awk '{print $2}')
 cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
