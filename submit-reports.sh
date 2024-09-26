@@ -13,7 +13,7 @@ done
 printf "%s submitting to influxdb\n" $(date --utc +%FT%TZ)
 for i in ~/logs/report-*
 do
-   
+   echo $i
    tag_count=$(cat $i | jq '.tags | length')
    field_count=$(cat $i | jq '.fields | length')
    
