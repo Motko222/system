@@ -10,17 +10,17 @@ do
    
    data=$(cat $i | jq -r '.measurement')","
    
-   for (( i=0; i<$tag_count; i++ ))
+   for (( j=0; j<$tag_count; i++ ))
    do
-    key=$(cat $i | jq .tags | jq -r keys[$i])
+    key=$(cat $i | jq .tags | jq -r keys[$j])
     value=$(cat $i | jq .tags | jq -r --arg a $key '.[$a]')
     data=$data$key"="$value
     [ $i -lt $(( tag_count - 1 )) ] && data=$data"," || data=$data" "
    done
    
-   for (( i=0; i<$field_count; i++ ))
+   for (( j=0; j<$field_count; i++ ))
    do
-    key=$(cat $i | jq .fields | jq -r keys[$i])
+    key=$(cat $i | jq .fields | jq -r keys[$j])
     value=$(cat $i | jq .fields | jq -r --arg a $key '.[$a]')
     data=$data$key"=\""$value"\""
     [ $i -lt $(( field_count - 1 )) ] && data=$data"," || data=$data" "$(date +%s%N)
