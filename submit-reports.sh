@@ -1,16 +1,16 @@
 #!/bin/bash
 
-printf "%s started " $(date --utc +%FT%TZ)
-printf "%s running reports " $(date --utc +%FT%TZ)
+printf "%s started \n" $(date --utc +%FT%TZ)
 
 for i in $(find /root/scripts -name "report.sh")
 do
- printf "%s running $s " $(date --utc +%FT%TZ) $i
+ printf "%s running %s " $(date --utc +%FT%TZ) $i
  bash $i
 done
 
 [ -z $INFLUX_HOST ] && exit
 
+printf "%s submitting to influxdb\n" $(date --utc +%FT%TZ)
 for i in ~/logs/report-*
 do
    
