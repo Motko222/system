@@ -1,5 +1,8 @@
 #!/bin/bash
 
+path=$(cd -- $(dirname -- "${BASH_SOURCE[0]}") && pwd)
+folder=$(echo $path | awk -F/ '{print $NF}')
+json=~/logs/report-$folder
 source ~/.bash_profile
 
 disk1_use=$(df | grep -E $DISK1 | awk '{print $5}' | sed 's/%//')
@@ -16,35 +19,28 @@ mem_size=$(free -h | grep Mem | awk '{print $2}')
 swap_size=$(free -h | grep Swap | awk '{print $2}')
 cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
 info="$cpu_type, $mem_size RAM, $swap_size swap, $cores cores"
-group=machine
 
-# show json output 
-cat << EOF
+cat >$json << EOF
 {
-  "machine":"$MACHINE",
-  "disk1":"$disk1_use",
-  "disk2":"$disk2_use",
-  "memory":"$mem_use",
-  "swap":"$swap_use",
-  "cpu":"$cpu_use",
-  "internal ip":"$int_ip",
-  "external ip":"$ext_ip",
-  "owner":"$owner",
-  "message":"$message",
-  "info":"$info",
   "updated":"$(date --utc +%FT%TZ)",
+  "measurement":"report",
+  "tags": {
+       "id":"$MACHINE",
+       "grp":"machine",
+       "owner":"$OWNER"
+  },
+  "fields": {
+      "disk1":"$disk1_use",
+      "disk2":"$disk2_use",
+      "memory":"$mem_use",
+      "swap":"$swap_use",
+      "cpu":"$cpu_use",
+      "internal ip":"$int_ip",
+      "external ip":"$ext_ip",
+      "message":"$message",
+      "info":"$info"
+  }
 }
 EOF
 
-# send data to influxdb
-if [ ! -z $INFLUX_HOST ]
-then
- curl --request POST \
- "$INFLUX_HOST/api/v2/write?org=$INFLUX_ORG&bucket=$INFLUX_BUCKET&precision=ns" \
-  --header "Authorization: Token $INFLUX_TOKEN" \
-  --header "Content-Type: text/plain; charset=utf-8" \
-  --header "Accept: application/json" \
-  --data-binary "
-    report,id=$MACHINE,grp=$group,owner=$owner disk1=\"$disk1_use\",disk2=\"$disk2_use\",memory=\"$mem_use\",swap=\"$swap_use\",cpu=\"$cpu_use\",int_ip=\"$int_ip\",ext_ip=\"$ext_ip\",message=\"$message\",info=\"$info\" $(date +%s%N)
-    "
-fi
+cat $json
