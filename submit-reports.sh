@@ -15,7 +15,7 @@ do
     key=$(cat $i | jq .tags | jq -r keys[$j])
     value=$(cat $i | jq .tags | jq -r --arg a $key '.[$a]')
     data=$data$key"="$value
-    [ $i -lt $(( tag_count - 1 )) ] && data=$data"," || data=$data" "
+    [ $j -lt $(( tag_count - 1 )) ] && data=$data"," || data=$data" "
    done
    
    for (( j=0; j<$field_count; i++ ))
@@ -23,7 +23,7 @@ do
     key=$(cat $i | jq .fields | jq -r keys[$j])
     value=$(cat $i | jq .fields | jq -r --arg a $key '.[$a]')
     data=$data$key"=\""$value"\""
-    [ $i -lt $(( field_count - 1 )) ] && data=$data"," || data=$data" "$(date +%s%N)
+    [ $j -lt $(( field_count - 1 )) ] && data=$data"," || data=$data" "$(date +%s%N)
    done
    
    if [ ! -z $INFLUX_HOST ]
