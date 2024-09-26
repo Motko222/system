@@ -1,6 +1,13 @@
 #!/bin/bash
 
 printf "%s started " $(date --utc +%FT%TZ)
+printf "%s running reports " $(date --utc +%FT%TZ)
+
+for i in $(find /root/scripts -name "report.sh")
+do
+ printf "%s running $s " $(date --utc +%FT%TZ) $i
+ .$i
+done
 
 [ -z $INFLUX_HOST ] && exit
 
