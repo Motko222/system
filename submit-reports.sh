@@ -4,7 +4,7 @@ printf "%s started \n" $(date --utc +%FT%TZ)
 
 for i in $(find /root/scripts -name "report.sh")
 do
- printf "%s running %s " $(date --utc +%FT%TZ) $i
+ printf "%s running %s \n" $(date --utc +%FT%TZ) $i
  bash $i
 done
 
