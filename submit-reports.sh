@@ -6,7 +6,7 @@ printf "%s running reports " $(date --utc +%FT%TZ)
 for i in $(find /root/scripts -name "report.sh")
 do
  printf "%s running $s " $(date --utc +%FT%TZ) $i
- .$i
+ bash $i
 done
 
 [ -z $INFLUX_HOST ] && exit
