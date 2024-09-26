@@ -47,4 +47,4 @@ do
 
 done
 
-printf "%s ended " $(date --utc +%FT%TZ)
+printf "%s ended \n" $(date --utc +%FT%TZ)
