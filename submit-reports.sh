@@ -1,5 +1,7 @@
 #!/bin/bash
 
+printf "%s started " $(date --utc +%FT%TZ)
+
 [ -z $INFLUX_HOST ] && exit
 
 for i in ~/logs/report-*
@@ -37,3 +39,5 @@ do
    fi
 
 done
+
+printf "%s ended " $(date --utc +%FT%TZ)
