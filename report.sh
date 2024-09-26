@@ -35,8 +35,8 @@ cat >$json << EOF
       "memory":"$mem_use",
       "swap":"$swap_use",
       "cpu":"$cpu_use",
-      "internal ip":"$int_ip",
-      "external ip":"$ext_ip",
+      "internal_ip":"$int_ip",
+      "external_ip":"$ext_ip",
       "message":"$message",
       "info":"$info"
   }
