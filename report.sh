@@ -11,7 +11,7 @@ mem_use=$(free | grep Mem | awk '{print $3 / $2 * 100}' | cut -d , -f 1 | awk '{
 swap_use=$(free | grep Swap | awk '{print $3 / $2 * 100}'| cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
 cpu_use=$(top -bn2 | grep '%Cpu' | tail -1 | grep -P '(....|...) id,'| awk '{print 100-$8}' | sed 's/,/./g')
 int_ip=$(hostname -I | cut -d' ' -f1)
-[ -z $EXT_IP ] && ext_ip=$(curl checkip.amazonaws.com) || ext_ip=$EXT_IP
+[ -z $EXT_IP ] && ext_ip=$(curl -s checkip.amazonaws.com) || ext_ip=$EXT_IP
 owner=$OWNER
 
 cpu_type=$(lscpu | grep -a "Model name" | awk -F "Model name:" '{print $2}' | sed 's/^[[:space:]]*//')
