@@ -2,6 +2,8 @@
 
 printf "%s started \n" $(date --utc +%FT%TZ)
 
+rm ~/logs/report-*
+
 for i in $(find /root/scripts -name "report.sh")
 do
  printf "%s running %s \n" $(date --utc +%FT%TZ) $i
