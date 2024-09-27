@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/.bash_profile
+
 printf "%s started \n" $(date --utc +%FT%TZ)
 
 rm ~/logs/report-*
