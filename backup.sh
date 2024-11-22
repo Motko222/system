@@ -3,8 +3,8 @@
 path=$(cd -- $(dirname -- "${BASH_SOURCE[0]}") && pwd)
 cd $path
 
-while IFS= read -r line1
+while IFS= read -r line
 do
-     cp -r $line1
-     echo $line1
+     cp -r $line
+     echo $line
 done < backup
