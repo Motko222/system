@@ -1,28 +1,13 @@
 #!/bin/bash
 
-source ~/.bash_profile
+path=$(cd -- $(dirname -- "${BASH_SOURCE[0]}") && pwd)
+cd $path
 
-echo "Removing old backup..."
-if [ -d $BACKUP/scripts ] 
-  then 
-    rm -r $BACKUP/scripts
-fi
-mkdir $BACKUP/scripts
-
-echo "Backing up scripts..."
-for i in $(ls ~/scripts)
- do
-  echo ~/scripts/$i
-  mkdir $BACKUP/scripts/$i
-  cp ~/scripts/$i/*.sh $BACKUP/scripts/$i
-  if [ -d ~/scripts/$i/config ]
-    then cp -r ~/scripts/$i/config $BACKUP/scripts/$i
-  fi
-done
-
-echo "Backing up profile..."
-echo ".bashrc"
-cp ~/.bashrc $BACKUP
-echo ".bash_profile"
-cp ~/.bash_profile $BACKUP
-echo "Done."
+while IFS= read -r line1
+do
+  while IFS= read -r line2
+   do
+     cp -r $line1 $line2
+     echo $line1   >   $line2
+   done < backup-path
+done < backup-list
