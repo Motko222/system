@@ -1,0 +1,3 @@
+/root/scripts/ /root/backup
+/root/.bash_profile /root/backup/
+/root/.bashrc /root/backup/
