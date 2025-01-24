@@ -20,7 +20,7 @@ done
 [ -z $INFLUX_HOST ] && exit
 
 printf "%s submitting to influxdb\n" $(date --utc +%FT%TZ)
-for i in ~/logs/report-*
+for i in /root/logs/report-*
 do
    echo $i
    tag_count=$(cat $i | jq '.tags | length')
