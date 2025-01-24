@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ -z %1 ] && read -p "id? " id || id=$1
+[ -z $1 ] && read -p "id? " id || id=$1
 source ~/.bash_profile
 
 curl --request POST "$INFLUX_HOST/api/v2/delete?org=$INFLUX_ORG&bucket=$INFLUX_BUCKET" \
