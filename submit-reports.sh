@@ -2,11 +2,11 @@
 
 path=$(cd -- $(dirname -- "${BASH_SOURCE[0]}") && pwd)
 folder=$(echo $path | awk -F/ '{print $NF}')
-source ~/.bash_profile
+source /root/.bash_profile
 
 printf "%s started \n" $(date --utc +%FT%TZ)
 
-rm ~/logs/report-*
+rm /root/logs/report-*
 
 for i in $(find -L /root/scripts -name "report.sh")
 do
