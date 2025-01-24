@@ -9,6 +9,8 @@ printf "%s started \n" $(date --utc +%FT%TZ)
 
 rm /root/logs/report-*
 
+[ -z $REPO_PATH ] && $REPO_PATH=/root/scripts
+
 for i in $(find -L $REPO_PATH -name "report.sh")
 do
  printf "%s running %s \n" $(date --utc +%FT%TZ) $i
