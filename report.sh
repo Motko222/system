@@ -7,6 +7,7 @@ source ~/.bash_profile
 
 disk1_use=$(df | grep -E $DISK1 | awk '{print $5}' | sed 's/%//')
 [ $DISK2 ] && disk2_use=$(df | grep -E $DISK2 | awk '{print $5}' | sed 's/%//')
+[ $DISK3 ] && disk3_use=$(df | grep -E $DISK3 | awk '{print $5}' | sed 's/%//')
 mem_use=$(free | grep Mem | awk '{print $3 / $2 * 100}' | cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
 swap_use=$(free | grep Swap | awk '{print $3 / $2 * 100}'| cut -d , -f 1 | awk '{printf "%.0f\n",$1}')
 cpu_use=$(top -bn2 | grep '%Cpu' | tail -1 | grep -P '(....|...) id,'| awk '{print 100-$8}' | sed 's/,/./g')
@@ -35,6 +36,7 @@ cat >$json << EOF
   "fields": {
       "disk1":"$disk1_use",
       "disk2":"$disk2_use",
+      "disk3":"$disk3_use",
       "memory":"$mem_use",
       "swap":"$swap_use",
       "cpu":"$cpu_use",
