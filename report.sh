@@ -21,8 +21,9 @@ swap_size=$(free -h | grep Swap | awk '{print $2}')
 cores=$(lscpu | grep "CPU(s):" | head -1 | awk '{print $2}')
 info="$cpu_type, $mem_size RAM, $swap_size swap, $cores cores"
 
-[ $disk1_use -gt 94 ] && message="disk1=$disk1_use%"
-[ $DISK2 ] && [ $disk2_use -gt 94 ] && message="disk1=$disk1_use% disk2=$disk2_use%"
+status="ok"
+[ $disk1_use -gt 94 ] && status="warning" && message="disk1=$disk1_use%"
+[ $DISK2 ] && [ $disk2_use -gt 94 ] && status="warning" && message="disk1=$disk1_use% disk2=$disk2_use%"
 
 cat >$json << EOF
 {
@@ -34,6 +35,7 @@ cat >$json << EOF
        "owner":"$OWNER"
   },
   "fields": {
+      "status":"$status",
       "disk1":"$disk1_use",
       "disk2":"$disk2_use",
       "disk3":"$disk3_use",
