@@ -30,7 +30,7 @@ row DEV SIZE MODEL MOUNT CTRL PORT ERR
 # NVMe
 for d in $(ls /sys/block | grep -E '^nvme[0-9]+n[0-9]+$' | sort -V); do
   c=${d%n*}
-  e=$(echo "$klog" | grep -ciE "$c(n[0-9]+)?:.*(timeout|reset|error)")
+  e=$(echo "$klog" | grep -iE "$c(n[0-9]+)?:.*(timeout|reset|error)" | grep -vc "Shutdown timeout set to")
   row $d $(lsblk -dno SIZE /dev/$d | xargs) $(model $d) $(mnt $d) NVMe - "$e$([ $e -gt 0 ] && echo ' !')"
 done
 
