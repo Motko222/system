@@ -17,11 +17,12 @@ mnt() {  # short mount name for a block device
 model() {  # short model, e.g. "WDC WD140EDGZ-11B1PA0" -> WD140EDGZ
   local m=$(lsblk -dno MODEL /dev/$1 | xargs)
   m=${m#WDC }
-  case "$m" in Samsung\ SSD\ *) m=${m#Samsung SSD }; m=${m// /} ;; *) m=${m%% *} ;; esac
-  echo "$m" | sed -E 's/-[0-9][0-9A-Z]{5,}$//'
+  case "$m" in Samsung\ SSD\ *) m=${m#Samsung SSD }; m=$(awk '{print $1$2}' <<<"$m") ;; *) m=${m%% *} ;; esac
+  m=$(echo "$m" | sed -E 's/-[0-9][0-9A-Z]{5,}$//')
+  echo "${m:0:14}"
 }
 
-row() { printf "%-8s %-6s %-12s %-6s %-6s %-6s %s\n" "$@"; }
+row() { printf "%-8s %-6s %-14s %-6s %-6s %-6s %s\n" "$@"; }
 
 echo "$(hostname) | last reboot: $(uptime -s) ($(uptime -p)) | errors counted since then"
 row DEV SIZE MODEL MOUNT CTRL PORT ERR
